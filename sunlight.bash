@@ -27,9 +27,13 @@ test -d $bash_hist || mkdir $HOME/.history-bash
 sship=`echo $SSH_CLIENT | awk '{print $1}'`
 export HISTFILE=$bash_hist/hist-$sship-`date +%Y-%m-%d-%H-%M-%S`.hist
 
+# Clean up files based on $SUNLIGHT_MAX_DAYS
+if [ "$SUNLIGHT_MAX_DAYS" != "" ] ; then
+    find ./ -mtime +$SUNLIGHT_MAX_DAYS | xargs rm -rf
+fi
+
 # Read in history from the previous history files, up until we hit HISTSIZE
 for file in `ls -1tr $bash_hist`; do
-    echo reading in $file
     history -r $bash_hist/$file
     if [ `history | wc -l` -gt $HISTSIZE ] ; then
         break

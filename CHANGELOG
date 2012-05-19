@@ -3,3 +3,6 @@ Version 0.1 - May 19 2012
 
 Version 0.2 - May 20 2012
     Store history in one-file-per-session
+
+Version 0.3 - May 20 2012
+    Clean up history files after SUNLIGHT_MAX_AGE days
