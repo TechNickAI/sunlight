@@ -10,9 +10,10 @@ Optionally informing the user that they are being monitored via a login message.
 
 
 ## Installation
-1. Clone this repo to a location that is writeable only by root. Recommended: `/etc/sunlight`
+1. Clone this repo. For extra security, put it in a location that is writeable only by root. Recommended: `/etc/sunlight`
 2. Add an entry to the master `/etc/profile` to source the login watcher file:
     `. $install_dir/sunlight.bash`
+    Note: This is the preferred method, because it will track all logins. If you do not have root access and or wish to only track specific users, then you can place the line above into `$HOME/.profile` instead
 3. Configure your installation by copying `sunlight-default.conf` to `sunlight.conf` and making the appropriate changes
 4. **Watch/fork this repo on github**. :) More usage will encourage me to build more features.
 
