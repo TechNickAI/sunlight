@@ -1,2 +1,5 @@
 Version 0.1 - May 19 2012
     Display login message to user
+
+Version 0.2 - May 20 2012
+    Store history in one-file-per-session
