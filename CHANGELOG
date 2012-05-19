@@ -6,3 +6,6 @@ Version 0.2 - May 20 2012
 
 Version 0.3 - May 20 2012
     Clean up history files after SUNLIGHT_MAX_AGE days
+
+Version 0.4 - May 20 2012
+    Email upon login

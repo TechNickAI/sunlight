@@ -14,18 +14,22 @@ else
     return
 fi
 
-if [ "$SUNLIGHT_LOGIN_MESSAGE" != "" ] ; then
-    echo $SUNLIGHT_LOGIN_MESSAGE
-fi
 
 # http://www.gnu.org/software/bash/manual/html_node/Bash-History-Builtins.html#Bash-History-Builtins
-
 # We are going to store each session as a separate file
 bash_hist=$HOME/.history-bash
-test -d $bash_hist || mkdir $HOME/.history-bash 
-
 sship=`echo $SSH_CLIENT | awk '{print $1}'`
+test -d $bash_hist || mkdir $HOME/.history-bash 
 export HISTFILE=$bash_hist/hist-$sship-`date +%Y-%m-%d-%H-%M-%S`.hist
+
+# Notify upon login
+if [ "$SUNLIGHT_EMAIL_NOTIFY_LOGIN" != "" ]; then
+    if [ "`which mail`" == "" ] ; then
+        echo "'mail' not installed, mail cannot be sent from Sunlight"
+    else 
+        echo "History will be recorded to $HISTFILE" | mail -s "$USER@$sship logged into `hostname -f`" $SUNLIGHT_EMAIL_NOTIFY_LOGIN
+    fi
+fi
 
 # Clean up files based on $SUNLIGHT_MAX_DAYS
 if [ "$SUNLIGHT_MAX_DAYS" != "" ] ; then
@@ -39,3 +43,7 @@ for file in `ls -1tr $bash_hist`; do
         break
     fi
 done
+
+if [ "$SUNLIGHT_LOGIN_MESSAGE" != "" ] ; then
+    echo $SUNLIGHT_LOGIN_MESSAGE
+fi
