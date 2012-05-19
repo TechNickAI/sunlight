@@ -23,12 +23,32 @@ test -d $bash_hist || mkdir $HOME/.history-bash
 export HISTFILE=$bash_hist/hist-$sship-`date +%Y-%m-%d-%H-%M-%S`.hist
 
 # Notify upon login
+mail_exists="`which mail`"
 if [ "$SUNLIGHT_EMAIL_NOTIFY_LOGIN" != "" ]; then
-    if [ "`which mail`" == "" ] ; then
+    if [ "$mail_exists" == "" ] ; then
         echo "'mail' not installed, mail cannot be sent from Sunlight"
     else 
         echo "History will be recorded to $HISTFILE" | mail -s "$USER@$sship logged into `hostname -f`" $SUNLIGHT_EMAIL_NOTIFY_LOGIN
     fi
+fi
+
+# Set up logout notify
+function sunlight_logout() {
+    if [ "$SUNLIGHT_EMAIL_NOTIFY_LOGOUT" != "" ]; then
+        tmphist=`mktemp /tmp/sunlight.XXXXXXXXXX`
+        history -a $tmphist 
+        cat $tmphist | mail -s "$USER@$sship logged out of `hostname -f`" $SUNLIGHT_EMAIL_NOTIFY_LOGOUT
+        rm $tmphist
+    fi
+}
+
+# Put the sunlight_logout call into ~/.bash_logout, if it doesn't already exist
+bash_logout=$HOME/.bash_logout
+if [ ! -f $bash_logout ] ; then 
+    touch $bash_logout
+fi
+if [ "`grep ^sunlight_logout ~/.bash_logout`" == "" ] ; then 
+    echo sunlight_logout >> $bash_logout
 fi
 
 # Clean up files based on $SUNLIGHT_MAX_DAYS
@@ -44,6 +64,8 @@ for file in `ls -1tr $bash_hist`; do
     fi
 done
 
+
+# Display the login message
 if [ "$SUNLIGHT_LOGIN_MESSAGE" != "" ] ; then
     echo $SUNLIGHT_LOGIN_MESSAGE
 fi
